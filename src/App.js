@@ -1,26 +1,27 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Toolbox from './toolbox/Toolbox';
+import Pagelist from './pagelist/Pagelist';
+import toolbars from './toolbar-contents';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  render() {
+    const _testPagelistItems = [
+      {
+        id: 0,
+        content: 'logo192.png',
+      },
+      {
+        id: 1,
+        content: 'logo192.png',
+      },
+    ];
+    return (
+      <div className="App">
+        <Toolbox toolbars={toolbars} />
+        <Pagelist items={_testPagelistItems} />
+      </div>
+    );
+  }
 }
 
 export default App;
