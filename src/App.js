@@ -5,18 +5,15 @@ import toolbars from './toolbar-contents';
 
 class App extends React.Component {
   render() {
-    const _testPagelistItems = [
-      {
-        id: 0,
+    const _testPagelistItems = [];
+    for (let i = 0; i < 17; i += 1) {
+      _testPagelistItems.push({
+        id: i,
         content: 'logo192.png',
-      },
-      {
-        id: 1,
-        content: 'logo192.png',
-      },
-    ];
+      });
+    }
     return (
-      <div className="App">
+      <div className="app leading-none">
         <Toolbox toolbars={toolbars} />
         <Pagelist items={_testPagelistItems} />
       </div>

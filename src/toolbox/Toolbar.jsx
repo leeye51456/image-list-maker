@@ -13,11 +13,11 @@ class Toolbar extends React.Component {
     ));
 
     return (
-      <div className="Toolbar">
-        <div className="Toolbar-label">
+      <div className="toolbar p-1 border-b last:border-b-0 border-gray-200">
+        <div className="toolbar-label inline-block mr-2 text-gray-700">
           {this.props.label}
         </div>
-        <ul className="Toolbar-items">
+        <ul className="toolbar-items inline-block">
           {toolbarItems}
         </ul>
       </div>

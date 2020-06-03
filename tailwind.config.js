@@ -6,6 +6,8 @@ module.exports = {
     ],
   },
   theme: {},
-  variants: {},
+  variants: {
+    borderWidth: ['first', 'last']
+  },
   plugins: [],
 }
