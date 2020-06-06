@@ -1,5 +1,5 @@
 import React from 'react';
-import Toolbox from './toolbox/Toolbox';
+import Toolbox from './toolbox/components/Toolbox';
 import Pagelist from './pagelist/Pagelist';
 import toolbars from './toolbar-contents';
 

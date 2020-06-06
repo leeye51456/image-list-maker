@@ -8,7 +8,7 @@ class Toolbar extends React.Component {
         key={item.name}
         name={item.name}
         label={item.label}
-        action={item.action}
+        handler={item.handler}
       />
     ));
 

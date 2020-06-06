@@ -7,7 +7,7 @@ class ToolbarItem extends React.Component {
         <button
           className="toolbar-button rounded bg-gray-300 px-4 py-2"
           type="button"
-          onClick={this.props.action}
+          onClick={this.props.handler}
         >
           {this.props.label}
         </button>

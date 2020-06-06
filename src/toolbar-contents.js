@@ -2,14 +2,14 @@ const toolbarItems_info = [
   {
     name: 'help',
     label: '도움말',
-    action() {
+    handler = () => {
       alert('help');
     },
   },
   {
     name: 'opensource',
     label: '오픈소스 정보',
-    action() {
+    handler = () => {
       alert('opensource');
     },
   },
@@ -19,21 +19,21 @@ const toolbarItems_file = [
   {
     name: 'new',
     label: '신규',
-    action() {
+    handler = () => {
       alert('new');
     },
   },
   {
     name: 'open',
     label: '작업용 파일 열기',
-    action() {
+    handler = () => {
       alert('open');
     },
   },
   {
     name: 'export-as-json',
     label: '작업용 파일로 내보내기',
-    action() {
+    handler = () => {
       alert('export-as-json');
     },
   },
@@ -43,21 +43,21 @@ const toolbarItems_edit = [
   {
     name: 'add-image',
     label: '새 이미지 추가',
-    action() {
+    handler = () => {
       alert('add-image');
     },
   },
   {
     name: 'replace-image',
     label: '선택한 이미지 교체',
-    action() {
+    handler = () => {
       alert('replace-image');
     },
   },
   {
     name: 'delete-image',
     label: '선택한 이미지 삭제',
-    action() {
+    handler = () => {
       alert('delete-image');
     },
   },
