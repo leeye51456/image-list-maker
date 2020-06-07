@@ -1,9 +1,15 @@
 import React from 'react';
 import Toolbox from './toolbox/components/Toolbox';
 import Pagelist from './pagelist/Pagelist';
-import toolbars from './toolbar-contents';
+import toolboxContents from './toolbox-contents';
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    toolboxContents.bindHandlers(this);
+  }
+
   render() {
     const _testPagelistItems = [];
     for (let i = 0; i < 17; i += 1) {
@@ -14,7 +20,7 @@ class App extends React.Component {
     }
     return (
       <div className="app leading-none">
-        <Toolbox toolbars={toolbars} />
+        <Toolbox toolbars={toolboxContents.toolbars} />
         <Pagelist items={_testPagelistItems} />
       </div>
     );
