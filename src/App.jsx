@@ -2,6 +2,7 @@ import React from 'react';
 import Toolbox from './toolbox/Toolbox';
 import Toolbar from './toolbox/Toolbar';
 import Pagelist from './pagelist/Pagelist';
+import PagelistItem from './pagelist/PagelistItem';
 // TODO - Extract strings
 
 class App extends React.Component {
@@ -10,14 +11,12 @@ class App extends React.Component {
 
     const _testPagelistItems = [];
     for (let i = 0; i < 17; i += 1) {
-      _testPagelistItems.push({
-        id: i,
-        content: 'logo192.png',
-      });
+      _testPagelistItems.push(<PagelistItem key={i + 1} id={i + 1} content="logo192.png" />);
     }
 
     this.state = {
       modified: false,
+      nextId: 100,
       pageListItems: _testPagelistItems,
     };
   }
@@ -57,7 +56,9 @@ class App extends React.Component {
             <button name="delete-image" className="rounded bg-gray-300 px-4 py-2 text-gray-800">선택한 이미지 삭제</button>
           </Toolbar>
         </Toolbox>
-        <Pagelist items={this.state.pageListItems} />
+        <Pagelist>
+          {this.state.pageListItems}
+        </Pagelist>
       </div>
     );
   }
