@@ -37,7 +37,7 @@ class App extends React.Component {
   }
 
   render() {
-    // TODO - Extract toolbar button CSS class
+    // TODO - ((SAME FOR ALL FILES)) Extract toolbar button CSS class
     return (
       <div className="app leading-none flex flex-col max-h-screen">
         <Toolbox>
