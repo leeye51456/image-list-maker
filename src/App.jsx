@@ -3,6 +3,7 @@ import Toolbox from './toolbox/Toolbox';
 import Toolbar from './toolbox/Toolbar';
 import Pagelist from './pagelist/Pagelist';
 import PagelistItem from './pagelist/PagelistItem';
+import AddImagesModal from './modal/AddImagesModal';
 // TODO - Extract strings
 
 class App extends React.Component {
@@ -16,14 +17,26 @@ class App extends React.Component {
 
     this.state = {
       modified: false,
+      // nextId: 1,
+      // pageListItems: [],
+      // modal: null,
+      // NOTE - Below for test
       nextId: 100,
       pageListItems: _testPagelistItems,
+      modal: (
+        <AddImagesModal
+          onPositive={() => {}}
+          onNegative={() => {}}
+        >
+          {/*  */}
+        </AddImagesModal>
+      ),
     };
   }
 
   // TODO - Event handlers go here!
 
-  fileNewHandler = (event) => {
+  handleFileNewClick = (event) => {
     if (this.state.modified) {
       const message = '‘확인’을 누르면 저장하지 않은 내용을 버리고 작업을 새로 시작합니다.';
       if (!window.confirm(message)) {
@@ -36,6 +49,14 @@ class App extends React.Component {
     });
   }
 
+  handleEditAddImageClick = (event) => {
+    // modal -> input[type=file]
+  }
+
+  handleModalCancelClick = (event) => {
+    this.setState({modal: null});
+  }
+
   render() {
     // TODO - ((SAME FOR ALL FILES)) Extract toolbar button CSS class
     return (
@@ -46,7 +67,7 @@ class App extends React.Component {
             <button name="opensource" className="rounded bg-gray-300 px-4 py-2 text-gray-800">오픈소스 정보</button>
           </Toolbar>
           <Toolbar name="file" label="파일">
-            <button name="new" onClick={this.fileNewHandler} className="rounded bg-gray-300 px-4 py-2 text-gray-800">신규</button>
+            <button name="new" onClick={this.handleFileNewClick} className="rounded bg-gray-300 px-4 py-2 text-gray-800">신규</button>
             <button name="open" className="rounded bg-gray-300 px-4 py-2 text-gray-800">작업용 파일 열기</button>
             <button name="export-as-json" className="rounded bg-gray-300 px-4 py-2 text-gray-800">작업용 파일로 내보내기</button>
           </Toolbar>
@@ -56,9 +77,16 @@ class App extends React.Component {
             <button name="delete-image" className="rounded bg-gray-300 px-4 py-2 text-gray-800">선택한 이미지 삭제</button>
           </Toolbar>
         </Toolbox>
-        <Pagelist>
-          {this.state.pageListItems}
-        </Pagelist>
+
+        <div className="pagelist-wrapper mx-auto w-full max-w-screen-xl">
+          <div className="m-4">
+            <Pagelist>
+              {this.state.pageListItems}
+            </Pagelist>
+          </div>
+        </div>
+
+        {this.state.modal}
       </div>
     );
   }

@@ -3,20 +3,24 @@ import React from 'react';
 class Modal extends React.Component {
   render() {
     return (
-      <div className="modal rounded-tl rounded-tr shadow">
-        <div className="overflow-hidden rounded-tl rounded-tr">
+      <div className="modal rounded shadow bg-white w-11/12 m-auto">
+        <div className="overflow-hidden rounded-tl rounded-tr bg-blue-200 p-4 pb-3 text-xl font-bold">
           {this.props.title}
         </div>
         <div className="overflow-y-scroll">
           {this.props.children}
         </div>
         <div className="rounded-bl rounded-br">
-          <button type="button" onClick={this.props.buttons.cancel.handler}>
-            {this.props.buttons.cancel.label || '취소'}
-          </button>
-          <button type="button" onClick={this.props.buttons.submit.handler}>
-            {this.props.buttons.submit.label || '확인'}
-          </button>
+          {this.props.onNegative && (
+            <button type="button" onClick={this.props.onNegative}>
+              {this.props.negativeLabel || '취소'}
+            </button>
+          )}
+          {this.props.onPositive && (
+            <button type="button" onClick={this.props.onPositive}>
+              {this.props.positiveLabel || '확인'}
+            </button>
+          )}
         </div>
       </div>
     );

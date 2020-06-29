@@ -1,4 +1,5 @@
 import React from 'react';
+import Modal from './Modal';
 import Pagelist from '../pagelist/Pagelist';
 import PagelistItem from '../pagelist/PagelistItem';
 
@@ -6,40 +7,39 @@ class AddImagesModal extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleFileChange = this.handleFileChange.bind(this);
+    this.fileElement = React.createRef();
 
     this.state = {
       newItems: [],
-      buttons: {
-        cancel: {
-          label: '취소',
-          handler: this.props.handlers.cancel,
-        },
-        submit: {
-          label: '가져온 이미지 추가',
-          handler: this.props.handlers.submit,
-        },
-      },
     }
+  }
+
+  handleAddImages = (event) => {
+    this.fileElement.current.click();
   }
 
   handleFileChange = (event) => {
     // TODO - Get base64-encoded images and display on the pagelist of this modal
+    console.log('file changed');
   }
 
   render() {
     return (
       <Modal
         title="새 이미지 추가"
-        buttons={this.state.buttons}
+        negativeLabel="취소"
+        onNegative={this.props.onNegative}
+        positiveLabel="가져온 이미지 추가"
+        onPositive={this.props.onPositive}
       >
         <div>
-          추가할 이미지 가져오기: <input type="file" onChange={this.handleFileChange} />
-          {/* QUESTION - Can I hide "input[type=file]" and fire click event by clicking a proxy button? */}
+          <button type="button" onClick={this.handleAddImages}>
+            추가할 이미지 가져오기
+          </button>
+          <input type="file" ref={this.fileElement} onChange={this.handleFileChange} />
         </div>
         <Pagelist>
           {/* Pagelist items */}
-          {/* QUESTION - This Pagelist component is compatible with this modal? */}
           {this.state.newItems}
         </Pagelist>
       </Modal>
