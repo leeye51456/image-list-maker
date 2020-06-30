@@ -10,28 +10,16 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    const _testPagelistItems = [];
-    for (let i = 0; i < 17; i += 1) {
-      _testPagelistItems.push(<PagelistItem key={i + 1} id={i + 1} content="logo192.png" />);
-    }
-
     this.state = {
       modified: false,
-      // nextId: 1,
-      // pageListItems: [],
-      // modal: null,
-      // NOTE - Below for test
-      nextId: 100,
-      pageListItems: _testPagelistItems,
-      modal: (
-        <AddImagesModal
-          onPositive={() => {}}
-          onNegative={() => {}}
-        >
-          {/*  */}
-        </AddImagesModal>
-      ),
+      nextId: 0,
+      pagelistItems: [],
+      modal: null,
     };
+  }
+
+  closeModal = () => {
+    this.setState({modal: null});
   }
 
   // TODO - Event handlers go here!
@@ -45,16 +33,38 @@ class App extends React.Component {
     }
     this.setState({
       modified: false,
-      pageListItems: [],
+      pagelistItems: [],
     });
   }
 
-  handleEditAddImageClick = (event) => {
-    // modal -> input[type=file]
+  handleEditAddImagesClick = (event) => {
+    this.setState({
+      modal: (
+        <AddImagesModal
+          onPositive={this.handleAddImagesSubmit}
+          onNegative={this.handleModalCancelClick}
+        />
+      )
+    });
   }
 
   handleModalCancelClick = (event) => {
-    this.setState({modal: null});
+    this.closeModal();
+  }
+
+  handleAddImagesSubmit = (newItems) => {
+    const pagelistItems = this.state.pagelistItems.slice();
+    let nextId = this.state.nextId;
+    for (const item of newItems) {
+      pagelistItems.push(<PagelistItem key={nextId} id={nextId} content={item.props.content} />);
+      nextId += 1;
+    }
+
+    this.setState({
+      nextId,
+      pagelistItems,
+      modal: null,
+    });
   }
 
   render() {
@@ -74,16 +84,16 @@ class App extends React.Component {
             <button name="export-as-json" className="rounded bg-gray-300 px-4 py-2 text-gray-800">작업용 파일로 내보내기</button>
           </Toolbar>
           <Toolbar name="edit" label="편집">
-            <button name="add-image" className="rounded bg-gray-300 px-4 py-2 text-gray-800">새 이미지 추가</button>
-            <button name="replace-image" className="rounded bg-gray-300 px-4 py-2 text-gray-800">선택한 이미지 교체</button>
-            <button name="delete-image" className="rounded bg-gray-300 px-4 py-2 text-gray-800">선택한 이미지 삭제</button>
+            <button name="add-images" onClick={this.handleEditAddImagesClick} className="rounded bg-gray-300 px-4 py-2 text-gray-800">새 이미지 추가</button>
+            <button name="replace-images" className="rounded bg-gray-300 px-4 py-2 text-gray-800">선택한 이미지 교체</button>
+            <button name="delete-images" className="rounded bg-gray-300 px-4 py-2 text-gray-800">선택한 이미지 삭제</button>
           </Toolbar>
         </Toolbox>
 
         <div className="pagelist-wrapper mx-auto w-full max-w-screen-xl">
           <div className="m-4">
             <Pagelist>
-              {this.state.pageListItems}
+              {this.state.pagelistItems}
             </Pagelist>
           </div>
         </div>
