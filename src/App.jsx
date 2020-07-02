@@ -1,9 +1,9 @@
 import React from 'react';
 import Toolbox from './toolbox/Toolbox';
 import Toolbar from './toolbox/Toolbar';
+import FileReadButton from './toolbox/FileReadButton';
 import Pagelist from './pagelist/Pagelist';
 import PagelistItem from './pagelist/PagelistItem';
-import AddImagesModal from './modal/AddImagesModal';
 // TODO - Extract strings
 
 class App extends React.Component {
@@ -18,8 +18,21 @@ class App extends React.Component {
     };
   }
 
-  closeModal = () => {
-    this.setState({modal: null});
+  updatePagelistItems = (newFiles, begin, end) => {
+    const beforeNewItems = this.state.pagelistItems.slice(0, begin);
+    const newItems = [];
+    const afterNewItems = this.state.pagelistItems.slice(end);
+
+    let nextId = this.state.nextId;
+    for (const file of newFiles) {
+      newItems.push(<PagelistItem key={nextId} id={nextId} content={URL.createObjectURL(file)} />);
+      nextId += 1;
+    }
+
+    this.setState({
+      nextId,
+      pagelistItems: [...beforeNewItems, ...newItems, ...afterNewItems],
+    });
   }
 
   // TODO - Event handlers go here!
@@ -37,34 +50,23 @@ class App extends React.Component {
     });
   }
 
-  handleEditAddImagesClick = (event) => {
-    this.setState({
-      modal: (
-        <AddImagesModal
-          onPositive={this.handleAddImagesSubmit}
-          onNegative={this.handleModalCancelClick}
-        />
-      )
-    });
+  handleEditAddImagesChange = (newFiles) => {
+    const currentLength = this.state.pagelistItems.length;
+    this.updatePagelistItems(newFiles, currentLength, currentLength);
   }
 
-  handleModalCancelClick = (event) => {
-    this.closeModal();
+  handleEditReplaceImagesChange = (newFiles) => {
+    console.log('It will be implemented after selection is implemented.');
+    // TODO - After implementing selection, pass selection to updatePagelistItems and remove currentLength
+    const currentLength = this.state.pagelistItems.length;
+    this.updatePagelistItems(newFiles, currentLength - 1, currentLength);
   }
 
-  handleAddImagesSubmit = (newItems) => {
-    const pagelistItems = this.state.pagelistItems.slice();
-    let nextId = this.state.nextId;
-    for (const item of newItems) {
-      pagelistItems.push(<PagelistItem key={nextId} id={nextId} content={item.props.content} />);
-      nextId += 1;
-    }
-
-    this.setState({
-      nextId,
-      pagelistItems,
-      modal: null,
-    });
+  handleEditDeleteImagesClick = () => {
+    console.log('It will be implemented after selection is implemented.');
+    // TODO - After implementing selection, pass selection to updatePagelistItems and remove currentLength
+    const currentLength = this.state.pagelistItems.length;
+    this.updatePagelistItems([], currentLength - 1, currentLength);
   }
 
   render() {
@@ -79,14 +81,51 @@ class App extends React.Component {
             <button name="opensource" className="rounded bg-gray-300 px-4 py-2 text-gray-800">오픈소스 정보</button>
           </Toolbar>
           <Toolbar name="file" label="파일">
-            <button name="new" onClick={this.handleFileNewClick} className="rounded bg-gray-300 px-4 py-2 text-gray-800">신규</button>
-            <button name="open" className="rounded bg-gray-300 px-4 py-2 text-gray-800">작업용 파일 열기</button>
-            <button name="export-as-json" className="rounded bg-gray-300 px-4 py-2 text-gray-800">작업용 파일로 내보내기</button>
+            <button
+              name="new"
+              onClick={this.handleFileNewClick}
+              className="rounded bg-gray-300 px-4 py-2 text-gray-800"
+            >
+              신규
+            </button>
+            <FileReadButton
+              name="open"
+              accept="text/json,text/plain"
+              onChange={this.handleFileOpenChange}
+            >
+              작업용 파일 열기
+            </FileReadButton>
+            <button
+              name="export-as-json"
+              className="rounded bg-gray-300 px-4 py-2 text-gray-800"
+            >
+              작업용 파일로 내보내기
+            </button>
           </Toolbar>
           <Toolbar name="edit" label="편집">
-            <button name="add-images" onClick={this.handleEditAddImagesClick} className="rounded bg-gray-300 px-4 py-2 text-gray-800">새 이미지 추가</button>
-            <button name="replace-images" className="rounded bg-gray-300 px-4 py-2 text-gray-800">선택한 이미지 교체</button>
-            <button name="delete-images" className="rounded bg-gray-300 px-4 py-2 text-gray-800">선택한 이미지 삭제</button>
+            <FileReadButton
+              name="add-images"
+              accept="image/*"
+              multiple={true}
+              onChange={this.handleEditAddImagesChange}
+            >
+              새 이미지 추가
+            </FileReadButton>
+            <FileReadButton
+              name="replace-images"
+              accept="image/*"
+              multiple={true}
+              onChange={this.handleEditReplaceImagesChange}
+            >
+              선택한 이미지 교체
+            </FileReadButton>
+            <button
+              name="delete-images"
+              onClick={this.handleEditDeleteImagesClick}
+              className="rounded bg-gray-300 px-4 py-2 text-gray-800"
+            >
+              선택한 이미지 삭제
+            </button>
           </Toolbar>
         </Toolbox>
 
@@ -97,8 +136,6 @@ class App extends React.Component {
             </Pagelist>
           </div>
         </div>
-
-        {this.state.modal}
       </div>
     );
   }
