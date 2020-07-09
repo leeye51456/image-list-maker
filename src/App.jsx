@@ -23,16 +23,31 @@ class App extends React.Component {
     const newItems = [];
     const afterNewItems = this.state.pagelistItems.slice(end);
 
+    let completed = 0;
     let nextId = this.state.nextId;
-    for (const file of newFiles) {
-      newItems.push(<PagelistItem key={nextId} id={nextId} content={URL.createObjectURL(file)} />);
-      nextId += 1;
-    }
+    const filesLength = newFiles.length;
+    for (let i = 0; i < filesLength; i += 1) {
+      const currentId = nextId + i;
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        newItems[i] = (
+          <PagelistItem
+            key={currentId}
+            id={currentId}
+            content={reader.result}
+          />
+        );
+        completed += 1;
 
-    this.setState({
-      nextId,
-      pagelistItems: [...beforeNewItems, ...newItems, ...afterNewItems],
-    });
+        if (completed === filesLength) {
+          this.setState({
+            nextId: nextId + filesLength,
+            pagelistItems: [...beforeNewItems, ...newItems, ...afterNewItems],
+          });
+        }
+      });
+      reader.readAsDataURL(newFiles[i]);
+    }
   }
 
   // TODO - Event handlers go here!
