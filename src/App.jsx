@@ -72,6 +72,23 @@ class App extends React.Component {
     });
   }
 
+  handleFileExportEditableClick = (event) => {
+    const obj = {
+      body: this.state.pagelistItems.map((item) => item.props.content),
+      // references: {},
+    };
+    const blob = new Blob([JSON.stringify(obj)], {type: 'application/json;charset=utf-8'});
+
+    const aElem = document.createElement('a');
+    aElem.href = URL.createObjectURL(blob);
+    aElem.download = 'export.json'; // TODO - Allow user to name the file and notify the name can be changed by browser
+    aElem.click();
+
+    this.setState({
+      modified: false,
+    });
+  }
+
   handleEditAddImagesChange = (newFiles) => {
     const currentLength = this.state.pagelistItems.length;
     this.updatePagelistItems(newFiles, currentLength, currentLength);
@@ -120,6 +137,7 @@ class App extends React.Component {
             <button
               name="export-as-json"
               className="rounded bg-gray-300 px-4 py-2 text-gray-800"
+              onClick={this.handleFileExportEditableClick}
             >
               작업용 파일로 내보내기
             </button>
