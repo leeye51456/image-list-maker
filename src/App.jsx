@@ -18,36 +18,43 @@ class App extends React.Component {
     };
   }
 
-  updatePagelistItems = (newFiles, begin, end) => {
-    const beforeNewItems = this.state.pagelistItems.slice(0, begin);
-    const newItems = [];
-    const afterNewItems = this.state.pagelistItems.slice(end);
-
-    let completed = 0;
-    let nextId = this.state.nextId;
-    const filesLength = newFiles.length;
-    for (let i = 0; i < filesLength; i += 1) {
-      const currentId = nextId + i;
+  getPromiseFromFile = (file, currentId) => {
+    return new Promise((resolve) => {
       const reader = new FileReader();
       reader.addEventListener('load', () => {
-        newItems[i] = (
+        resolve(
           <PagelistItem
             key={currentId}
             id={currentId}
             content={reader.result}
           />
         );
-        completed += 1;
-
-        if (completed === filesLength) {
-          this.setState({
-            nextId: nextId + filesLength,
-            pagelistItems: [...beforeNewItems, ...newItems, ...afterNewItems],
-          });
-        }
       });
-      reader.readAsDataURL(newFiles[i]);
+      reader.readAsDataURL(file);
+    });
+  }
+  getPromisesFromFiles = (files, nextId) => {
+    const promises = [];
+    const filesLength = files.length;
+    for (let i = 0; i < filesLength; i += 1) {
+      promises.push(this.getPromiseFromFile(files[i], nextId + i));
     }
+    return promises;
+  }
+
+  updatePagelistItems = async (newFiles, begin, end) => {
+    const beforeNewItems = this.state.pagelistItems.slice(0, begin);
+    const afterNewItems = this.state.pagelistItems.slice(end);
+
+    const newFilesLength = newFiles.length;
+    const nextId = this.state.nextId;
+    const newItems = await Promise.all(this.getPromisesFromFiles(newFiles, nextId));
+
+    this.setState({
+      modified: true,
+      nextId: nextId + newFilesLength,
+      pagelistItems: [...beforeNewItems, ...newItems, ...afterNewItems],
+    });
   }
 
   // TODO - Event handlers go here!
