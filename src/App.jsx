@@ -18,6 +18,16 @@ class App extends React.Component {
     };
   }
 
+  readJsonFile = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        resolve(JSON.parse(reader.result));
+      });
+      reader.readAsText(file, 'utf-8');
+    });
+  }
+
   getPromiseFromFile = (file, currentId) => {
     return new Promise((resolve) => {
       const reader = new FileReader();
@@ -69,6 +79,25 @@ class App extends React.Component {
     this.setState({
       modified: false,
       pagelistItems: [],
+    });
+  }
+
+  handleFileOpenChange = async (files) => {
+    const fileContent = await this.readJsonFile(files[0]);
+
+    const pagelistItems = fileContent.body.map((item, index) => (
+      <PagelistItem
+        key={index}
+        id={index}
+        content={item}
+      />
+    ));
+
+    const fileContentLength = fileContent.body.length;
+    this.setState({
+      modified: false,
+      nextId: fileContentLength,
+      pagelistItems,
     });
   }
 
@@ -129,7 +158,7 @@ class App extends React.Component {
             </button>
             <FileReadButton
               name="open"
-              accept="text/json,text/plain"
+              accept="application/json,text/plain"
               onChange={this.handleFileOpenChange}
             >
               작업용 파일 열기
