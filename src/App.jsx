@@ -1,4 +1,5 @@
 import React from 'react';
+import JsPdf from 'jspdf';
 import Toolbox from './toolbox/Toolbox';
 import Toolbar from './toolbox/Toolbar';
 import FileReadButton from './toolbox/FileReadButton';
@@ -118,6 +119,45 @@ class App extends React.Component {
     });
   }
 
+  handleFileExportPdfClick = (event) => {
+    // FIXME - Correct orientation and format to images
+    const doc = new JsPdf({
+      unit: 'px',
+      format: [1920, 1080],
+      orientation: 'landscape',
+    });
+    doc.deletePage(1);
+
+    const {pagelistItems} = this.state;
+    const totalPages = pagelistItems.length;
+
+    for (let i = 0; i < totalPages; i += 1) {
+      doc.addPage({
+        format: [1920, 1080],
+        orientation: 'landscape',
+      });
+
+      doc.setFillColor(0x96);
+      doc.rect(-75, -75, 1575, 960, 'F');
+
+      // FIXME - Correct image ratio
+      //       - Use alias after handling hashing
+      doc.addImage({
+        imageData: pagelistItems[i].props.content,
+        x: 0,
+        y: 0,
+        w: 1920 / 4 * 3,
+        h: 1080 / 4 * 3,
+        // alias: pagelistItems[i].props.content,
+        compression: 'FAST',
+      });
+
+      // TODO - Print page numbers
+    }
+
+    doc.save('export.pdf');
+  }
+
   handleEditAddImagesChange = (newFiles) => {
     const currentLength = this.state.pagelistItems.length;
     this.updatePagelistItems(newFiles, currentLength, currentLength);
@@ -169,6 +209,13 @@ class App extends React.Component {
               onClick={this.handleFileExportEditableClick}
             >
               작업용 파일로 내보내기
+            </button>
+            <button
+              name="export-pdf"
+              className="rounded bg-gray-300 px-4 py-2 text-gray-800"
+              onClick={this.handleFileExportPdfClick}
+            >
+              PDF 파일로 내보내기
             </button>
           </Toolbar>
           <Toolbar name="edit" label="편집">
