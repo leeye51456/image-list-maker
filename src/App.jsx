@@ -54,12 +54,16 @@ class App extends React.Component {
   }
 
   updatePagelistItems = async (newFiles, begin, end) => {
+    console.time('copying last state');
     const beforeNewItems = this.state.pagelistItems.slice(0, begin);
     const afterNewItems = this.state.pagelistItems.slice(end);
+    console.timeEnd('copying last state');
 
     const newFilesLength = newFiles.length;
     const nextId = this.state.nextId;
+    console.time('loading new images')
     const newItems = await Promise.all(this.getPromisesFromFiles(newFiles, nextId));
+    console.timeEnd('loading new images')
 
     this.setState({
       modified: true,
@@ -84,8 +88,11 @@ class App extends React.Component {
   }
 
   handleFileOpenChange = async (files) => {
+    console.time('reading json file');
     const fileContent = await this.readJsonFile(files[0]);
+    console.timeEnd('reading json file');
 
+    console.time('mapping image to component');
     const pagelistItems = fileContent.body.map((item, index) => (
       <PagelistItem
         key={index}
@@ -93,6 +100,7 @@ class App extends React.Component {
         content={item}
       />
     ));
+    console.timeEnd('mapping image to component');
 
     const fileContentLength = fileContent.body.length;
     this.setState({
@@ -103,6 +111,7 @@ class App extends React.Component {
   }
 
   handleFileExportEditableClick = (event) => {
+    console.time('exporting json');
     const obj = {
       body: this.state.pagelistItems.map((item) => item.props.content),
       // references: {},
@@ -113,6 +122,7 @@ class App extends React.Component {
     aElem.href = URL.createObjectURL(blob);
     aElem.download = 'export.json'; // TODO - Allow user to name the file and notify the name can be changed by browser
     aElem.click();
+    console.timeEnd('exporting json');
 
     this.setState({
       modified: false,
@@ -120,6 +130,7 @@ class App extends React.Component {
   }
 
   handleFileExportPdfClick = (event) => {
+    console.time('preprocessing for exporting pdf');
     // FIXME - Correct orientation and format to images
     const doc = new JsPdf({
       unit: 'px',
@@ -154,8 +165,11 @@ class App extends React.Component {
 
       // TODO - Print page numbers
     }
+    console.timeEnd('preprocessing for exporting pdf');
 
+    console.time('saving pdf file');
     doc.save('export.pdf');
+    console.timeEnd('saving pdf file');
   }
 
   handleEditAddImagesChange = (newFiles) => {
