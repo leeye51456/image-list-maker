@@ -11,9 +11,11 @@ class FileReadButton extends React.Component {
     this.fileInput.current.click();
   }
 
-  handleFileInputChange = () => {
-    this.props.onChange(this.fileInput.current.files);
-    this.fileInput.current.value = '';
+  handleFileInputChange = (event) => {
+    if (typeof this.props.onChange === 'function') {
+      this.props.onChange(event.target.files);
+    }
+    event.target.value = '';
   }
 
   render() {
