@@ -218,7 +218,7 @@ class App extends React.Component {
               작업용 파일 열기
             </FileReadButton>
             <button
-              name="export-as-json"
+              name="export-json"
               className="rounded bg-gray-300 px-4 py-2 text-gray-800"
               onClick={this.handleFileExportEditableClick}
             >
