@@ -16,7 +16,60 @@ class App extends React.Component {
       nextId: 0,
       pagelistItems: [],
       modal: null,
+      pdfProgress: '',
     };
+  }
+
+  buildPdfPagesAndSave = ({index, totalPages, pagelistItems, doc}) => {
+    if (index + 1 >= totalPages) {
+      console.timeEnd('build pdf');
+
+      console.time('save pdf file');
+      doc.save('export.pdf');
+      console.timeEnd('save pdf file');
+
+      this.setState({
+        pdfProgress: ''
+      });
+
+      return;
+    }
+
+    setTimeout(this.buildPdfPagesAndSave, 0, {
+      index: index + 1,
+      totalPages,
+      pagelistItems,
+      doc,
+    });
+
+    doc.addPage({
+      format: [1920, 1080],
+      orientation: 'landscape',
+    });
+
+    doc.setFillColor(0x96);
+    doc.rect(-75, -75, 1575, 960, 'F');
+
+    // FIXME - Correct image ratio
+    //       - Use alias after handling hashing
+    doc.addImage({
+      imageData: pagelistItems[index].props.content,
+      x: 0,
+      y: 0,
+      w: 1920 / 4 * 3,
+      h: 1080 / 4 * 3,
+      // alias: pagelistItems[index].props.content,
+      compression: 'FAST',
+    });
+
+    // TODO - Print page numbers
+    doc.setFillColor(0x96);
+    doc.roundedRect(-10, 10, 50, 10, 2, 2, 'F');
+    doc.text(String(index + 1), 1900, 10, {align: 'right'});
+
+    this.setState({
+      pdfProgress: `${index + 1}/${totalPages}`
+    });
   }
 
   readJsonFile = (file) => {
@@ -142,34 +195,12 @@ class App extends React.Component {
     const {pagelistItems} = this.state;
     const totalPages = pagelistItems.length;
 
-    for (let i = 0; i < totalPages; i += 1) {
-      doc.addPage({
-        format: [1920, 1080],
-        orientation: 'landscape',
-      });
-
-      doc.setFillColor(0x96);
-      doc.rect(-75, -75, 1575, 960, 'F');
-
-      // FIXME - Correct image ratio
-      //       - Use alias after handling hashing
-      doc.addImage({
-        imageData: pagelistItems[i].props.content,
-        x: 0,
-        y: 0,
-        w: 1920 / 4 * 3,
-        h: 1080 / 4 * 3,
-        // alias: pagelistItems[i].props.content,
-        compression: 'FAST',
-      });
-
-      // TODO - Print page numbers
-    }
-    console.timeEnd('preprocessing for exporting pdf');
-
-    console.time('saving pdf file');
-    doc.save('export.pdf');
-    console.timeEnd('saving pdf file');
+    setTimeout(this.buildPdfPagesAndSave, 0, {
+      index: 0,
+      totalPages,
+      pagelistItems,
+      doc,
+    });
   }
 
   handleEditAddImagesChange = (newFiles) => {
@@ -231,6 +262,9 @@ class App extends React.Component {
             >
               PDF 파일로 내보내기
             </button>
+            <label name="pdf-progress">
+              {this.state.pdfProgress}
+            </label>
           </Toolbar>
           <Toolbar name="edit" label="편집">
             <FileReadButton
