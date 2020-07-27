@@ -107,16 +107,16 @@ class App extends React.Component {
   }
 
   updatePagelistItems = async (newFiles, begin, end) => {
-    console.time('copying last state');
+    console.time('copy last state');
     const beforeNewItems = this.state.pagelistItems.slice(0, begin);
     const afterNewItems = this.state.pagelistItems.slice(end);
-    console.timeEnd('copying last state');
+    console.timeEnd('copy last state');
 
     const newFilesLength = newFiles.length;
     const nextId = this.state.nextId;
-    console.time('loading new images')
+    console.time('load new images')
     const newItems = await Promise.all(this.getPromisesFromFiles(newFiles, nextId));
-    console.timeEnd('loading new images')
+    console.timeEnd('load new images')
 
     this.setState({
       modified: true,
@@ -141,11 +141,11 @@ class App extends React.Component {
   }
 
   handleFileOpenChange = async (files) => {
-    console.time('reading json file');
+    console.time('read json file');
     const fileContent = await this.readJsonFile(files[0]);
-    console.timeEnd('reading json file');
+    console.timeEnd('read json file');
 
-    console.time('mapping image to component');
+    console.time('map image to component');
     const pagelistItems = fileContent.body.map((item, index) => (
       <PagelistItem
         key={index}
@@ -153,7 +153,7 @@ class App extends React.Component {
         content={item}
       />
     ));
-    console.timeEnd('mapping image to component');
+    console.timeEnd('map image to component');
 
     const fileContentLength = fileContent.body.length;
     this.setState({
@@ -164,7 +164,7 @@ class App extends React.Component {
   }
 
   handleFileExportEditableClick = (event) => {
-    console.time('exporting json');
+    console.time('export json');
     const obj = {
       body: this.state.pagelistItems.map((item) => item.props.content),
       // references: {},
@@ -175,7 +175,7 @@ class App extends React.Component {
     aElem.href = URL.createObjectURL(blob);
     aElem.download = 'export.json'; // TODO - Allow user to name the file and notify the name can be changed by browser
     aElem.click();
-    console.timeEnd('exporting json');
+    console.timeEnd('export json');
 
     this.setState({
       modified: false,
@@ -183,7 +183,7 @@ class App extends React.Component {
   }
 
   handleFileExportPdfClick = (event) => {
-    console.time('preprocessing for exporting pdf');
+    console.time('build pdf');
     // FIXME - Correct orientation and format to images
     const doc = new JsPdf({
       unit: 'px',
@@ -209,14 +209,14 @@ class App extends React.Component {
   }
 
   handleEditReplaceImagesChange = (newFiles) => {
-    console.log('It will be implemented after selection is implemented.');
+    console.warn('It will be implemented after selection is implemented.');
     // TODO - After implementing selection, pass selection to updatePagelistItems and remove currentLength
     const currentLength = this.state.pagelistItems.length;
     this.updatePagelistItems(newFiles, currentLength - 1, currentLength);
   }
 
   handleEditDeleteImagesClick = () => {
-    console.log('It will be implemented after selection is implemented.');
+    console.warn('It will be implemented after selection is implemented.');
     // TODO - After implementing selection, pass selection to updatePagelistItems and remove currentLength
     const currentLength = this.state.pagelistItems.length;
     this.updatePagelistItems([], currentLength - 1, currentLength);
